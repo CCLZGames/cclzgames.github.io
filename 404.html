@@ -1,75 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>404 – We’re Lost</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8">
+<title>Animated Monster</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, #0033cc, #000080);
+    font-family: 'Comic Sans MS', sans-serif;
+    color: white;
+    overflow: hidden;
+  }
 
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      background: #0a2cff;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      color: white;
-    }
+  header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+  }
 
-    .container {
-      min-height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 2rem;
-    }
+  header button {
+    background: #e0e0e0;
+    color: red;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+  }
 
-    img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 12px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    }
+  #monster {
+    position: absolute;
+    width: 150px;
+    transition: transform 0.1s linear;
+  }
 
-    h1 {
-      margin-top: 2rem;
-      font-size: 2.5rem;
-      font-weight: 600;
-    }
+  .buttons {
+    margin-bottom: 40px;
+  }
 
-    p {
-      font-size: 1.2rem;
-      opacity: 0.9;
-    }
+  .buttons button {
+    background: #e0e0e0;
+    color: black;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+  }
 
-    a {
-      margin-top: 1.5rem;
-      display: inline-block;
-      padding: 0.7rem 1.4rem;
-      background: white;
-      color: #0a2cff;
-      border-radius: 999px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
+  h1, p {
+    margin: 10px;
+    text-align: center;
+  }
 
-    a:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-    }
-  </style>
+</style>
 </head>
-
 <body>
-  <div class="container">
-    <img src="918ead5f-fd27-4167-8c70-2a547e3d7df0.png" alt="404 page illustration" />
 
-    <h1>I think we’re lost</h1>
-    <p>Looks like we’ve hit a snag.</p>
+<header>
+  <div>CCLZ</div>
+  <button onclick="login()">Log in →</button>
+</header>
 
-    <a href="/">← back home</a>
-  </div>
+<h1>I think we’re lost</h1>
+<img id="monster" src="e117e679-5f7b-4332-9d47-908ada88bc5c.png" alt="Monster">
+<h1>Looks like we’ve hit a snag!</h1>
+
+<div class="buttons">
+  <button onclick="backHome()">← back home</button>
+</div>
+
+<script>
+  const monster = document.getElementById('monster');
+  let x = 0;
+  let y = 200;
+  let dx = 2; // horizontal speed
+  let dy = 1.5; // vertical speed
+
+  function animateMonster() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    x += dx;
+    y += dy;
+
+    // bounce off edges
+    if (x + monster.width > width || x < 0) dx = -dx;
+    if (y + monster.height > height || y < 100) dy = -dy;
+
+    monster.style.left = x + 'px';
+    monster.style.top = y + 'px';
+
+    requestAnimationFrame(animateMonster);
+  }
+
+  animateMonster();
+
+  // Button functions
+  function backHome() {
+    alert('Going back home!');
+    // Add actual redirection logic if needed
+  }
+
+  function login() {
+    alert('Logging in!');
+    // Add actual login logic if needed
+  }
+</script>
+
 </body>
 </html>
