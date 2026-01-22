@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>School Database Manager</title>
+    <style>
+        body { font-family: Arial; margin: 40px; }
+        input, button { margin: 5px; padding: 5px; }
+        pre { background: #f4f4f4; padding: 10px; }
+        .school { border: 1px solid #ccc; padding: 10px; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<h2>School Database Manager</h2>
+
+<input id="dbname" placeholder="School name">
+<button onclick="createSchool()">Create</button>
+<button onclick="deleteSchool()">Delete</button>
+<button onclick="refresh()">Refresh</button>
+
+<p id="output"></p>
+<div id="schools"></div>
+
+<script src="db.js"></script>
+<script>
+function createSchool() {
+    output.innerText = DB.createDatabase(dbname.value)
+        ? "School created."
+        : "School already exists.";
+    refresh();
+}
+
+function deleteSchool() {
+    output.innerText = DB.deleteDatabase(dbname.value)
+        ? "School deleted."
+        : "School not found.";
+    refresh();
+}
+
+function refresh() {
+    schools.innerHTML = "";
+
+    DB.listDatabases().forEach(name => {
+        schools.innerHTML += `
+            <div class="school">
+                <h3>${name}</h3>
+                <strong>Users</strong>
+                <pre>${JSON.stringify(DB.getUsers(name), null, 2)}</pre>
+                <strong>Attendance</strong>
+                <pre>${JSON.stringify(DB.getAttendance(name), null, 2)}</pre>
+                <strong>House Points</strong>
+                <pre>${JSON.stringify(DB.getHousePoints(name), null, 2)}</pre>
+            </div>
+        `;
+    });
+}
+
+refresh();
+</script>
+
+</body>
+</html>

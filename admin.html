@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Database Control</title>
+    <style>
+        body { font-family: Arial; margin: 40px; }
+        input, button, select, textarea { margin: 5px; padding: 5px; }
+        pre { background: #f4f4f4; padding: 10px; max-height: 300px; overflow: auto; }
+        .hidden { display: none; }
+        .danger { background: darkred; color: white; }
+        .box { border: 1px solid #ccc; padding: 15px; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<h2>🔒 Admin Database Control Panel</h2>
+
+<!-- ================= PASSWORD SCREEN ================= -->
+<div id="loginBox" class="box">
+    <p>Enter admin password to continue:</p>
+    <input id="adminPass" type="password" placeholder="Password">
+    <button onclick="checkPassword()">Login</button>
+    <p id="loginMsg"></p>
+</div>
+
+<!-- ================= ADMIN PANEL ================= -->
+<div id="adminPanel" class="hidden">
+
+    <h3>Available Databases</h3>
+    <select id="dbSelect"></select>
+    <button onclick="viewDatabase()">View Database</button>
+
+    <pre id="dbOutput"></pre>
+
+    <hr>
+
+    <h3>Export All Data</h3>
+    <button onclick="exportDB()">Download JSON</button>
+
+    <hr>
+
+    <h3>Import Data</h3>
+    <textarea id="importData" rows="6" cols="80"
+        placeholder="Paste previously exported JSON here"></textarea><br>
+    <button onclick="importDB()">Import Data</button>
+
+    <hr>
+
+    <h3>🚨 Danger Zone</h3>
+    <button class="danger" onclick="resetDatabase()">HARD RESET ALL DATA</button>
+
+</div>
+
+<script src="db.js"></script>
+<script>
+/* ================= PASSWORD ================= */
+const ADMIN_PASSWORD = "Admindb";
+
+function checkPassword() {
+    if (adminPass.value === ADMIN_PASSWORD) {
+        loginBox.classList.add("hidden");
+        adminPanel.classList.remove("hidden");
+        loadDatabases();
+    } else {
+        loginMsg.innerText = "Incorrect password.";
+    }
+}
+
+/* ================= LOAD DATABASES ================= */
+function loadDatabases() {
+    dbSelect.innerHTML = "";
+    DB.listDatabases().forEach(name => {
+        const o = document.createElement("option");
+        o.value = name;
+        o.text = name;
+        dbSelect.add(o);
+    });
+}
+
+/* ================= VIEW DATABASE ================= */
+function viewDatabase() {
+    const name = dbSelect.value;
+    if (!name) return;
+
+    const data = DB._getRawDatabase(name);
+    dbOutput.innerText = JSON.stringify(data, null, 2);
+}
+
+/* ================= EXPORT ================= */
+function exportDB() {
+    const data = localStorage.getItem("school_databases");
+    if (!data) return alert("No data to export.");
+
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "school_database_backup.json";
+    a.click();
+
+    URL.revokeObjectURL(url);
+}
+
+/* ================= IMPORT ================= */
+function importDB() {
+    if (!importData.value.trim()) {
+        alert("No data provided.");
+        return;
+    }
+
+    try {
+        JSON.parse(importData.value);
+        if (!confirm("This will overwrite ALL current data. Continue?")) return;
+
+        localStorage.setItem("school_databases", importData.value);
+        alert("Import successful. Refresh the page.");
+    } catch {
+        alert("Invalid JSON.");
+    }
+}
+
+/* ================= RESET ================= */
+function resetDatabase() {
+    if (!confirm("⚠️ THIS WILL DELETE ALL DATABASES, USERS, ATTENDANCE, AND HOUSE POINTS.\n\nThis cannot be undone.\n\nContinue?")) {
+        return;
+    }
+
+    // Delete ALL databases
+    localStorage.removeItem("school_databases");
+
+    // Force a clean reload so UI cannot reference old data
+    location.reload();
+}
+</script>
+
+</body>
+</html>
