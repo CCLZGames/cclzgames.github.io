@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Moodscape</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #0f0f14;
+      --card: #1a1a22;
+      --text: #f5f5f7;
+      --muted: #9b9ba5;
+      --accent: #6cf2c2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      padding: 1.2rem;
+      text-align: center;
+      font-weight: 600;
+      font-size: 1.4rem;
+      letter-spacing: 0.5px;
+    }
+
+    main {
+      padding: 1rem;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    input, textarea, button {
+      width: 100%;
+      background: #111;
+      border: 1px solid #2a2a35;
+      color: var(--text);
+      padding: 0.7rem;
+      border-radius: 10px;
+      font-size: 1rem;
+    }
+
+    textarea {
+      resize: none;
+      margin-top: 0.5rem;
+    }
+
+    button {
+      cursor: pointer;
+      margin-top: 0.6rem;
+      background: var(--accent);
+      color: #000;
+      font-weight: 600;
+      border: none;
+    }
+
+    .emoji-picker {
+      display: flex;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .emoji-picker span {
+      font-size: 1.5rem;
+      cursor: pointer;
+      opacity: 0.6;
+    }
+
+    .emoji-picker span.selected {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 0.6rem;
+    }
+
+    .memory {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .memory img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .memory .emoji {
+      position: absolute;
+      bottom: 6px;
+      right: 6px;
+      font-size: 1.4rem;
+      background: rgba(0,0,0,0.5);
+      border-radius: 50%;
+      padding: 4px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-content {
+      background: var(--card);
+      border-radius: 16px;
+      max-width: 500px;
+      width: 100%;
+      padding: 1rem;
+    }
+
+    .modal img {
+      width: 100%;
+      border-radius: 12px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-top: 0.4rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>🌙 Moodscape</header>
+
+<main>
+  <div class="card">
+    <input type="file" accept="image/*" capture="environment" id="photoInput" />
+    <textarea id="caption" placeholder="What did this moment feel like?" rows="3"></textarea>
+
+    <div class="emoji-picker" id="emojiPicker">
+      <span>😀</span><span>🥲</span><span>😡</span>
+      <span>😍</span><span>😴</span><span>🤍</span>
+    </div>
+
+    <button id="saveBtn">Save Mood</button>
+  </div>
+
+  <button onclick="showRandom()">🎲 Random Memory</button>
+
+  <div class="gallery" id="gallery"></div>
+</main>
+
+<div class="modal" id="modal">
+  <div class="modal-content" id="modalContent"></div>
+</div>
+
+<script>
+  let db;
+  let selectedEmoji = "";
+
+  // ---------- IndexedDB ----------
+  const request = indexedDB.open("moodscapeDB", 1);
+  request.onupgradeneeded = e => {
+    db = e.target.result;
+    db.createObjectStore("memories", { keyPath: "id" });
+  };
+  request.onsuccess = e => {
+    db = e.target.result;
+    loadMemories();
+  };
+
+  // ---------- Emoji Picker ----------
+  document.querySelectorAll("#emojiPicker span").forEach(span => {
+    span.onclick = () => {
+      document.querySelectorAll("#emojiPicker span").forEach(s => s.classList.remove("selected"));
+      span.classList.add("selected");
+      selectedEmoji = span.textContent;
+    };
+  });
+
+  // ---------- Save ----------
+  document.getElementById("saveBtn").onclick = () => {
+    const file = photoInput.files[0];
+    const caption = document.getElementById("caption").value;
+    if (!file || !selectedEmoji) return alert("Add a photo and an emoji ✨");
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const tx = db.transaction("memories", "readwrite");
+      tx.objectStore("memories").add({
+        id: Date.now(),
+        image: reader.result,
+        caption,
+        emoji: selectedEmoji,
+        date: new Date().toISOString()
+      });
+      tx.oncomplete = () => {
+        photoInput.value = "";
+        caption.value = "";
+        loadMemories();
+      };
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // ---------- Load ----------
+  function loadMemories() {
+    gallery.innerHTML = "";
+    const tx = db.transaction("memories", "readonly");
+    tx.objectStore("memories").getAll().onsuccess = e => {
+      e.target.result
+        .sort((a,b) => b.id - a.id)
+        .forEach(showMemory);
+    };
+  }
+
+  function showMemory(mem) {
+    const div = document.createElement("div");
+    div.className = "memory";
+    div.innerHTML = `
+      <img src="${mem.image}">
+      <div class="emoji">${mem.emoji}</div>
+    `;
+    div.onclick = () => openModal(mem);
+    gallery.appendChild(div);
+  }
+
+  // ---------- Modal ----------
+  function openModal(mem) {
+    modal.style.display = "flex";
+    modalContent.innerHTML = `
+      <img src="${mem.image}">
+      <p>${mem.caption || ""}</p>
+      <p class="muted">${new Date(mem.date).toLocaleString()} ${mem.emoji}</p>
+    `;
+  }
+
+  modal.onclick = () => modal.style.display = "none";
+
+  // ---------- Random ----------
+  function showRandom() {
+    const tx = db.transaction("memories", "readonly");
+    tx.objectStore("memories").getAll().onsuccess = e => {
+      const all = e.target.result;
+      if (!all.length) return;
+      openModal(all[Math.floor(Math.random() * all.length)]);
+    };
+  }
+</script>
+
+</body>
+</html>
