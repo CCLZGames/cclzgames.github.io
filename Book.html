@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Book a Table</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+<h1 style="text-align:center;">
+    Book a Table
+</h1>
+
+
+
+<div class="restaurant">
+
+
+    <div class="bar">
+
+        <h2>BAR</h2>
+
+    </div>
+
+
+
+    <div class="left-side">
+
+
+        <button class="table" data-table="01">01</button>
+
+        <button class="table" data-table="02">02</button>
+
+        <button class="table" data-table="03">03</button>
+
+        <button class="table" data-table="04">04</button>
+
+        <button class="table" data-table="05">05</button>
+
+        <button class="table" data-table="06">06</button>
+
+
+    </div>
+
+
+
+    <div class="walkway"></div>
+
+
+
+    <div class="right-side">
+
+
+        <button class="table" data-table="07">07</button>
+
+        <button class="table" data-table="08">08</button>
+
+        <button class="table" data-table="09">09</button>
+
+        <button class="table" data-table="10">10</button>
+
+        <button class="table" data-table="11">11</button>
+
+        <button class="table" data-table="12">12</button>
+
+
+    </div>
+
+
+</div>
+
+
+
+<p style="text-align:center;">
+    All tables are 4 seaters
+</p>
+
+
+
+
+
+<!-- Booking Popup -->
+
+
+<div class="popup" id="popup">
+
+
+    <div class="popup-box">
+
+
+
+        <!-- Close button -->
+
+        <button class="close-popup" id="closePopup">
+            ×
+        </button>
+
+
+
+        <h2>
+            Book Table 
+            <span id="selectedTable"></span>
+        </h2>
+
+
+
+        <label>
+            Number of people:
+        </label>
+
+
+
+        <select id="people">
+
+            <option value="1">1</option>
+
+            <option value="2">2</option>
+
+            <option value="3">3</option>
+
+            <option value="4">4</option>
+
+        </select>
+
+
+
+
+        <button id="play">
+            Play
+        </button>
+
+
+
+
+
+        <div id="details" class="hidden">
+
+
+
+            <input 
+                id="firstName"
+                placeholder="First name"
+                required
+            >
+
+
+
+            <input 
+                id="lastName"
+                placeholder="Last name"
+                required
+            >
+
+
+
+            <label>
+                Booking time:
+            </label>
+
+
+
+            <input 
+                id="time"
+                type="time"
+                required
+            >
+
+
+
+
+
+            <button id="book">
+                Book Table
+            </button>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+</div>
+
+
+
+
+
+<script src="script.js"></script>
+
+
+</body>
+
+</html>

@@ -1,45 +1,388 @@
-.nav {
+body {
+    font-family: Verdana, sans-serif;
+}
+
+.Food {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    gap: 20px;
+}
+
+.food-item {
     border: 1px solid #ccc;
-    border-width: 1px 0;
-    list-style: none;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.food-item img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    width: 80%;
+    max-width: 700px;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    animation: zoom 0.3s ease;
+}
+
+.modal-content img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.close {
+    float: right;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+@keyframes zoom {
+    from {
+        transform: scale(0.7);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+body {
     margin: 0;
-    padding: 0;
-    text-align: center; /* « The magic. */
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-.nav li {
-    display: inline; /* « More magic. */
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+/* Restaurant layout */
+.restaurant {
+    width: min(90vw, 1000px);
+
+    margin: 10px auto;
+
+    display: grid;
+    grid-template-columns: 2fr 80px 2fr;
+    gap: 20px;
+
+    background: #1f1f1f;
+    padding: 30px;
+    border-radius: 30px;
+
+    transform: scale(0.8);
+    transform-origin: top center;
 }
 
-.nav a {
-    display: inline-block; /* « Last bit of magic. */
+/* Bar */
+.bar {
+    grid-column: 1 / 4;
+
+    height: clamp(70px, 10vw, 120px);
+
+    background: #4a3426;
+    color: white;
+
+    border-radius: 25px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: clamp(20px, 3vw, 36px);
+}
+
+/* Left & Right table sections */
+.left-side,
+.right-side {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+/* Walkway */
+.walkway {
+    background: transparent;
+}
+
+/* Tables */
+.table {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+
+    background: #6b4f3a;
+    color: white;
+
+    border: none;
+    border-radius: 15px;
+
+    font-size: clamp(18px, 2vw, 30px);
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.25s;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Hover effect */
+.table:hover {
+    background: #8a6548;
+    transform: scale(1.05);
+}
+
+/* Click effect */
+.table:active {
+    transform: scale(0.95);
+}
+
+/* Popup */
+
+.popup {
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+
+    justify-content:center;
+    align-items:center;
+}
+
+
+.popup-box {
+
+    background:white;
+    padding:30px;
+    border-radius:20px;
+
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+
+    animation:pop 0.3s ease;
+}
+
+
+@keyframes pop {
+
+    from {
+        transform:scale(0.5);
+        opacity:0;
+    }
+
+    to {
+        transform:scale(1);
+        opacity:1;
+    }
+
+}
+
+
+/* Selected table */
+
+.table.selected {
+
+    background:#2ecc71;
+
+    animation:bounce 0.4s;
+
+}
+
+
+@keyframes bounce {
+
+    50% {
+        transform:scale(1.15);
+    }
+
+}
+
+
+/* Already booked */
+
+.table.booked {
+
+    background:#777;
+    cursor:not-allowed;
+
+}
+
+
+.hidden {
+
+    display:none;
+
+}
+
+
+#play,
+#book {
+
+    padding:10px;
+    border:none;
+    border-radius:10px;
+
+    cursor:pointer;
+
+}
+
+#tables {
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(4,150px);
+
+    gap:20px;
+
+    justify-content:center;
+
+}
+
+
+
+.admin-table {
+
+    padding:20px;
+
+    border:none;
+
+    border-radius:15px;
+
+    font-size:18px;
+
+    cursor:pointer;
+
+}
+
+
+
+.admin-table.booked {
+
+    background:#777;
+
+    color:white;
+
+}
+
+
+
+.admin-table.available {
+
+    background:#2ecc71;
+
+}
+/* Admin dashboard responsive scaling */
+
+#tables {
+    width: 90%;
+    max-width: 1000px;
+
+    margin: 20px auto;
+
+    display: grid;
+
+    grid-template-columns:
+    repeat(auto-fit, minmax(120px, 1fr));
+
+    gap: 20px;
+}
+
+
+.admin-table {
+
+    width: 100%;
+
+    aspect-ratio: 1 / 1;
+
+    border: none;
+
+    border-radius: 15px;
+
+    font-size: clamp(14px, 2vw, 24px);
+
+    cursor: pointer;
+
     padding: 10px;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
 }
 
-.images
-{
- height: 70px;   
+.nav-buttons {
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:20px;
+
+    flex-wrap:wrap;
+
+    margin:30px;
+
 }
 
-.Names
-{
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+.cool-button {
+
+    padding:15px 35px;
+
+    background:#1f1f1f;
+
+    color:white;
+
+    text-decoration:none;
+
+    font-size:20px;
+
+    font-weight:bold;
+
+    border-radius:15px;
+
+    border:2px solid #6b4f3a;
+
+    transition:0.3s;
+
+    position:relative;
+
+    overflow:hidden;
+
 }
 
-.HomeText
-{
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+
+/* Hover animation */
+
+.cool-button:hover {
+
+    background:#6b4f3a;
+
+    transform:translateY(-5px);
+
+    box-shadow:
+    0 10px 20px rgba(0,0,0,0.3);
+
 }
 
-.ContactText
-{
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-}
 
-.DownloadText
-{
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+/* Click animation */
+
+.cool-button:active {
+
+    transform:scale(0.95);
+
 }
