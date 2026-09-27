@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AreoLabs - Plane View</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <span class="logo-icon">✈</span>
+            <span>AreoLabs</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="/"><span>⌂</span> Home</a>
+            <a href="/planes" class="active"><span>✈</span> Aircraft</a>
+            <a href="/engines"><span>⚙</span> Engines</a>
+            <a href="about:blank"><span>ⓘ</span> About</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <small>AREOLABS SYSTEM</small>
+            <span>● Online</span>
+        </div>
+    </aside>
+
+    <main>
+        <h1 id="plane-title">Loading...</h1>
+        <img id="plane-image" src="" alt="" height="450" width="600">
+
+        <h2>Parts:</h2>
+        <div id="parts-container"></div>
+    </main>
+
+    <script src="planes-data.js"></script>
+    <script src="plane-view.js"></script>
+</body>
+</html>
