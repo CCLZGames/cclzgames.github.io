@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chatterbox (local test)</title><link rel="stylesheet" href="css/style.css"></head>
+<body>
+<div id="auth" class="center">
+  <form id="auth-form" class="card">
+    <h1>Chatterbox</h1>
+    <input id="auth-user" placeholder="Username" autocomplete="username" required>
+    <input id="auth-pass" type="password" placeholder="Password" autocomplete="current-password" required>
+    <div id="auth-error" class="error"></div>
+    <button class="btn">Log in</button>
+    <p class="muted">Test accounts: alice / alice123<br>bob / bob123 · carol / carol123</p>
+  </form>
+</div>
+<div id="app" class="hidden">
+  <nav id="servers"><div class="srv active" title="Test Server">TS</div></nav>
+  <aside id="channels">
+    <div id="server-name" style="cursor:default">Test Server</div>
+    <div id="channel-head"><span>TEXT CHANNELS</span></div>
+    <div id="channel-list"></div>
+    <div id="profile"><div class="avatar" id="me-avatar"></div><div id="me-name"></div><button id="logout" class="icon-btn" title="Log out">⎋</button></div>
+  </aside>
+  <main id="chat">
+    <header><button id="menu-btn" class="icon-btn">☰</button><span id="chat-title"></span><button id="members-btn" class="icon-btn">👥</button></header>
+    <div id="messages"></div>
+    <form id="composer"><input id="msg-input" placeholder="Send a message" autocomplete="off" maxlength="2000"><button class="btn">Send</button></form>
+  </main>
+  <aside id="members"><div class="head">MEMBERS</div><div id="member-list"></div></aside>
+  <div id="scrim"></div>
+</div>
+<div id="toast"></div>
+<script src="js/app.js"></script>
+</body></html>
